@@ -32,24 +32,29 @@ export default function MegaSearchSection() {
   return (
     <section className="relative z-20 -mt-20 px-6">
       <div className="mx-auto w-full max-w-content">
-        <div className="rounded-2xl border border-gray-100 bg-white p-2 shadow-blue-xl">
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
-            <label className="relative flex-1">
-              <Search size={18} strokeWidth={1.5} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div className="rounded-2xl border border-white/40 bg-white/95 p-3 shadow-2xl shadow-blue/15 backdrop-blur-xl">
+          <div className="flex flex-col gap-3 md:flex-row md:flex-wrap lg:flex-nowrap lg:items-center">
+            {/* Search Input */}
+            <div className="relative flex h-14 w-full md:w-full lg:w-auto lg:flex-1 items-center rounded-xl border border-gray-200 bg-gray-50/50 transition-all focus-within:border-blue/30 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue/10">
+              <div className="pointer-events-none ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-blue/10 text-blue shadow-sm shadow-blue/20">
+                <Search size={18} strokeWidth={2} />
+              </div>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 placeholder="Search make, model, or keyword..."
-                className="w-full rounded-xl border border-transparent bg-transparent py-4 pl-11 pr-3 text-[16px] outline-none transition-all focus:border-blue/20 focus:bg-blue/5"
+                className="h-full w-full bg-transparent px-3 text-[15px] outline-none text-gray-800 placeholder:text-gray-500"
               />
-            </label>
+            </div>
+            
+            {/* Body Type Select */}
             <select
               value={bodyType}
               onChange={(e) => setBodyType(e.target.value)}
-              className="rounded-xl border border-gray-200 px-4 py-4 text-sm text-gray-700 outline-none focus:border-blue"
+              className="h-14 w-full md:flex-1 lg:w-44 xl:w-48 lg:flex-none appearance-none rounded-xl border border-gray-200 bg-gray-50/50 px-4 pr-8 text-[15px] text-gray-700 outline-none transition-all focus:border-blue/30 focus:bg-white focus:ring-4 focus:ring-blue/10 cursor-pointer"
             >
-              <option value="">All Types</option>
+              <option value="">All Body Types</option>
               <option value="sedan">Sedan</option>
               <option value="suv">SUV</option>
               <option value="hatchback">Hatchback</option>
@@ -57,10 +62,12 @@ export default function MegaSearchSection() {
               <option value="van">Van</option>
               <option value="coupe">Coupe</option>
             </select>
+
+            {/* Price Range Select */}
             <select
               value={priceRange}
               onChange={(e) => setPriceRange(e.target.value)}
-              className="rounded-xl border border-gray-200 px-4 py-4 text-sm text-gray-700 outline-none focus:border-blue"
+              className="h-14 w-full md:flex-1 lg:w-44 xl:w-48 lg:flex-none appearance-none rounded-xl border border-gray-200 bg-gray-50/50 px-4 pr-8 text-[15px] text-gray-700 outline-none transition-all focus:border-blue/30 focus:bg-white focus:ring-4 focus:ring-blue/10 cursor-pointer"
             >
               <option value="">Any Price</option>
               <option value="10000">Under $10K</option>
@@ -68,7 +75,14 @@ export default function MegaSearchSection() {
               <option value="50000">Under $50K</option>
               <option value="100000">Under $100K</option>
             </select>
-            <Button className="rounded-xl px-8 py-4" onClick={handleSearch}>Search</Button>
+
+            {/* Submit Button */}
+            <Button 
+              className="h-14 w-full md:flex-1 lg:w-36 xl:w-40 lg:flex-none rounded-xl bg-blue text-white flex items-center justify-center text-[15px] font-semibold shadow-lg shadow-blue/25" 
+              onClick={handleSearch}
+            >
+              Search Cars
+            </Button>
           </div>
         </div>
 
