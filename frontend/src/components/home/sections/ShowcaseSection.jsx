@@ -47,34 +47,34 @@ export default function ShowcaseSection() {
           onMouseLeave={() => setRotation({ x: 0, y: 0 })}
         >
           <div
-            className="relative transition-transform duration-100"
+            className="relative mx-auto w-full max-w-3xl transition-transform duration-100"
             style={{ transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
           >
             <img
               src="https://images.unsplash.com/photo-1611821064430-0d40291d0f0b?auto=format&fit=crop&w=1600&q=80"
               alt="3D showcase vehicle"
-              className="mx-auto w-full max-w-3xl rounded-3xl shadow-car"
+              className="w-full rounded-3xl shadow-car"
             />
             <div className="absolute -bottom-6 left-1/2 h-16 w-3/4 -translate-x-1/2 rounded-full bg-blue/25 blur-3xl" />
-          </div>
 
-          <div className="absolute left-2 top-8 rounded-2xl border border-white/15 bg-black-800/80 px-4 py-3 backdrop-blur">
-            <p className="text-xs text-gray-400">Power</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold">
-              <Zap size={14} strokeWidth={1.5} className="text-blue" />523 BHP
-            </p>
-          </div>
-          <div className="absolute right-4 top-6 rounded-2xl border border-white/15 bg-black-800/80 px-4 py-3 backdrop-blur">
-            <p className="text-xs text-gray-400">Engine</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold">
-              <Sparkles size={14} strokeWidth={1.5} className="text-blue" />V8 4.4L
-            </p>
-          </div>
-          <div className="absolute bottom-10 left-8 rounded-2xl border border-white/15 bg-black-800/80 px-4 py-3 backdrop-blur">
-            <p className="text-xs text-gray-400">Acceleration</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold">
-              <Gauge size={14} strokeWidth={1.5} className="text-blue" />0-60 in 3.8s
-            </p>
+            <div className="absolute left-6 top-6 rounded-2xl border border-white/15 bg-black-800/90 px-4 py-3 shadow-xl backdrop-blur-md transition-transform hover:scale-105">
+              <p className="text-xs text-gray-400">Power</p>
+              <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold">
+                <Zap size={14} strokeWidth={1.5} className="text-blue" />523 BHP
+              </p>
+            </div>
+            <div className="absolute right-6 top-6 rounded-2xl border border-white/15 bg-black-800/90 px-4 py-3 shadow-xl backdrop-blur-md transition-transform hover:scale-105">
+              <p className="text-xs text-gray-400">Engine</p>
+              <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold">
+                <Sparkles size={14} strokeWidth={1.5} className="text-blue" />V8 4.4L
+              </p>
+            </div>
+            <div className="absolute bottom-6 left-6 rounded-2xl border border-white/15 bg-black-800/90 px-4 py-3 shadow-xl backdrop-blur-md transition-transform hover:scale-105">
+              <p className="text-xs text-gray-400">Acceleration</p>
+              <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold">
+                <Gauge size={14} strokeWidth={1.5} className="text-blue" />0-60 in 3.8s
+              </p>
+            </div>
           </div>
         </div>
       </div>
