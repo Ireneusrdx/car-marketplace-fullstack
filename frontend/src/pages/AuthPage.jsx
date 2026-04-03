@@ -34,13 +34,63 @@ function SocialButton({ label, icon, onClick, disabled }) {
 }
 
 function OtpBoxes() {
+  const [otp, setOtp] = useState(Array(6).fill(""));
+
+  const handleChange = (element, index) => {
+    if (isNaN(element.value)) return false;
+    setOtp([...otp.map((d, idx) => (idx === index ? element.value : d))]);
+    if (element.nextSibling && element.value !== "") {
+      element.nextSibling.focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      if (otp[index] === "") {
+        if (e.target.previousSibling) {
+          e.target.previousSibling.focus();
+        }
+      } else {
+        setOtp([...otp.map((d, idx) => (idx === index ? "" : d))]);
+      }
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").slice(0, 6).split("");
+    if (pastedData.some(char => isNaN(char))) return;
+    
+    const newOtp = [...otp];
+    pastedData.forEach((char, index) => {
+      newOtp[index] = char;
+    });
+    setOtp(newOtp);
+    
+    const inputs = e.target.parentElement.querySelectorAll("input");
+    const focusIndex = Math.min(pastedData.length, 5);
+    if (inputs[focusIndex]) {
+      inputs[focusIndex].focus();
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2">
-      {Array.from({ length: 6 }).map((_, index) => (
+    <div className="flex items-center gap-2 sm:gap-3 justify-between">
+      {otp.map((data, index) => (
         <input
           key={index}
+          type="text"
           maxLength={1}
-          className="h-11 w-10 rounded-lg border border-gray-200 text-center text-lg font-semibold outline-none transition-colors focus:border-blue"
+          value={data}
+          onChange={(e) => handleChange(e.target, index)}
+          onKeyDown={(e) => handleKeyDown(e, index)}
+          onPaste={handlePaste}
+          onFocus={(e) => e.target.select()}
+          className={`h-10 sm:h-12 md:h-14 flex-1 w-full min-w-0 rounded-xl border bg-white shadow-sm text-center text-lg sm:text-xl font-bold outline-none transition-all duration-200 ${
+            data
+              ? "border-blue text-blue ring-4 ring-blue/10 bg-blue/5"
+              : "border-gray-200 text-gray-900 focus:border-blue focus:ring-4 focus:ring-blue/10"
+          }`}
         />
       ))}
     </div>
@@ -301,16 +351,33 @@ export default function AuthPage() {
               </>
             )}
 
-            <div className="mt-6 rounded-2xl border border-gray-100 bg-gray-50 p-4">
-              <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-gray-700">
-                <Phone size={15} strokeWidth={1.5} className="text-blue" />
-                Phone OTP (preview)
+            <div className="relative mt-8 overflow-hidden rounded-2xl border border-blue/20 bg-gradient-to-b from-blue/5 to-white/50 p-6 shadow-blue-sm backdrop-blur-sm">
+              <div className="mb-4 flex items-center justify-between">
+                <p className="inline-flex items-center gap-2 text-sm font-bold tracking-wide text-gray-900">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue/10">
+                    <Phone size={12} strokeWidth={2} className="text-blue" />
+                  </span>
+                  Verify Number
+                </p>
+                <div className="rounded-full bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-blue shadow-sm ring-1 ring-blue/10">
+                  Preview
+                </div>
+              </div>
+              <p className="mb-5 text-balance text-sm font-medium text-gray-500">
+                We've sent a 6-digit verification code to your phone.
               </p>
+              
               <OtpBoxes />
-              <button className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue">
-                <Sparkles size={12} strokeWidth={1.5} />
-                Resend code in 24s
-              </button>
+              
+              <div className="mt-6 flex flex-col gap-2">
+                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue px-4 py-3 text-sm font-bold text-white shadow-blue-md transition-all hover:bg-blue-600 active:scale-[0.98]">
+                  Verify Code
+                </button>
+                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-xs font-semibold text-gray-600 transition-all hover:bg-gray-50 hover:text-blue">
+                  <Sparkles size={14} strokeWidth={1.5} className="text-blue" />
+                  Resend code in 24s
+                </button>
+              </div>
             </div>
           </div>
         </section>
