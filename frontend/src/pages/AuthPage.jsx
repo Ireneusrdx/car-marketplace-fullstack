@@ -253,25 +253,27 @@ export default function AuthPage() {
                 required
               />
 
-              <label className="relative block">
+              <label className="block">
                 <span className="mb-2 block text-sm font-medium text-gray-600">Password</span>
-                <Lock size={18} strokeWidth={1.5} className="pointer-events-none absolute left-4 top-[45px] -translate-y-1/2 text-gray-400" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter password"
-                  value={form.password}
-                  onChange={(event) => updateForm({ password: event.target.value })}
-                  minLength={tab === "signup" ? 8 : 1}
-                  required
-                  className="w-full rounded-xl border border-gray-200 px-5 py-3.5 pl-11 pr-11 text-[15px] outline-none transition-all duration-200 focus:border-blue focus:ring-4 focus:ring-blue/10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-3 top-[45px] -translate-y-1/2 p-1 text-gray-400 hover:text-blue"
-                >
-                  {showPassword ? <EyeOff size={18} strokeWidth={1.5} /> : <Eye size={18} strokeWidth={1.5} />}
-                </button>
+                <div className="relative">
+                  <Lock size={18} strokeWidth={1.5} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={form.password}
+                    onChange={(event) => updateForm({ password: event.target.value })}
+                    minLength={tab === "signup" ? 8 : 1}
+                    required
+                    className="w-full rounded-xl border border-gray-200 px-5 py-3.5 pl-11 pr-11 text-[15px] outline-none transition-all duration-200 focus:border-blue focus:ring-4 focus:ring-blue/10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue"
+                  >
+                    {showPassword ? <EyeOff size={18} strokeWidth={1.5} /> : <Eye size={18} strokeWidth={1.5} />}
+                  </button>
+                </div>
               </label>
 
               {tab === "signin" ? (
