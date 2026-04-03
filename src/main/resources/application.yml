@@ -1,0 +1,104 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: automarket-backend
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/autovault}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: automarket-group
+      auto-offset-reset: earliest
+
+  mail:
+    host: ${MAIL_HOST:smtp.mailtrap.io}
+    port: ${MAIL_PORT:2525}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  secret: ${JWT_SECRET:change-this-secret-in-prod}
+  access-token-expiration-minutes: 60
+  refresh-token-expiration-days: 30
+
+firebase:
+  credentials-path: ${FIREBASE_CREDENTIALS_PATH:}
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:sk_test_placeholder}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_placeholder}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:placeholder}
+  api-key: ${CLOUDINARY_API_KEY:placeholder}
+  api-secret: ${CLOUDINARY_API_SECRET:placeholder}
+
+openai:
+  api-key: ${OPENAI_API_KEY:placeholder}
+  model: ${OPENAI_MODEL:gpt-4o}
+  max-tokens: ${OPENAI_MAX_TOKENS:1000}
+
+nhtsa:
+  base-url: https://vpic.nhtsa.dot.gov/api
+
+fueleconomy:
+  base-url: https://www.fueleconomy.gov/ws/rest
+
+app:
+  seed:
+    enabled: ${SEED_ENABLED:true}
+    listings-count: ${SEED_LISTINGS_COUNT:50}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  health:
+    mail:
+      enabled: false
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+    com.automarket: DEBUG
+

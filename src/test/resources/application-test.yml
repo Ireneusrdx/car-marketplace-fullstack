@@ -1,0 +1,30 @@
+app:
+  seed:
+    enabled: false
+
+firebase:
+  credentials-path:
+
+jwt:
+  secret: test-jwt-secret-which-is-at-least-32-chars
+  access-token-expiration-minutes: 30
+  refresh-token-expiration-days: 7
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/autovault_test
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+

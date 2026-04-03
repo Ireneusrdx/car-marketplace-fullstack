@@ -1,0 +1,39 @@
+# ── Build artifacts ──
+target/
+*.class
+*.jar
+*.war
+
+# ── IDE ──
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── Environment & Secrets ──
+.env
+firebase-service-account.json
+*.pem
+*.key
+
+# ── Logs ──
+*.log
+logs/
+test-results/
+
+# ── Frontend ──
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/test-results/
+frontend/playwright-report/
+
+# ── Misc local data ──
+postgres_data/
+redis_data/

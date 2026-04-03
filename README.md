@@ -1,0 +1,239 @@
+# AutoVault
+
+> A full-stack AI-powered car marketplace with real-time listings, test drive bookings, and intelligent recommendations.
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18, Vite, Zustand, Framer Motion, Axios |
+| **Backend** | Java 17, Spring Boot 3.3, Spring Security, JPA/Hibernate |
+| **Database** | PostgreSQL 16 (Flyway migrations) |
+| **Cache** | Redis 7 |
+| **Messaging** | Apache Kafka |
+| **Payments** | Stripe (PaymentIntents + webhooks) |
+| **AI** | OpenAI GPT-4o (recommendations + similarity) |
+| **Images** | Cloudinary |
+| **Docs** | Swagger / OpenAPI 3 |
+
+---
+
+## Quick Start — Local Development
+
+### Prerequisites
+
+| Service | Install (macOS) | Install (Linux) |
+|---------|----------------|-----------------|
+| **PostgreSQL 16** | `brew install postgresql@16` | `sudo apt install postgresql` |
+| **Redis 7** | `brew install redis` | `sudo apt install redis` |
+| **Apache Kafka** | Download from [kafka.apache.org](https://kafka.apache.org/downloads), use KRaft mode | Same |
+| **Java 17** | `brew install openjdk@17` | `sudo apt install openjdk-17-jdk` |
+| **Node.js 20** | `brew install node@20` | `nvm install 20` |
+| **Maven 3.9+** | `brew install maven` | `sudo apt install maven` |
+
+### 1. Start Infrastructure Services
+
+```bash
+# PostgreSQL
+brew services start postgresql@16   # macOS
+sudo systemctl start postgresql      # Linux
+
+# Create the database
+createdb autovault
+
+# Redis
+brew services start redis   # macOS
+sudo systemctl start redis   # Linux
+
+# Kafka (KRaft mode — no Zookeeper needed)
+cd /path/to/kafka
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
+bin/kafka-server-start.sh config/kraft/server.properties
+```
+
+### 2. Configure Environment
+
+```bash
+cp .env.example .env   # or edit .env directly
+# Fill in your API keys (Stripe, OpenAI, Cloudinary, Firebase)
+```
+
+### 3. Start Backend
+
+```bash
+mvn spring-boot:run
+# → API: http://localhost:8080
+# → Swagger UI: http://localhost:8080/swagger-ui.html
+```
+
+### 4. Start Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+# → http://localhost:5173
+```
+
+### 5. Stripe Webhooks (for payments)
+
+```bash
+stripe listen --forward-to localhost:8080/api/webhooks/stripe
+```
+
+---
+
+## API Endpoints
+
+### Auth (`/api/auth`)
+| Method | Path | Access |
+|--------|------|--------|
+| POST | `/email/register` | Public |
+| POST | `/email/login` | Public |
+| POST | `/firebase` | Public |
+| POST | `/refresh` | Public |
+| POST | `/logout` | Public |
+| GET | `/me` | Authenticated |
+
+### Listings (`/api/listings`)
+| Method | Path | Access |
+|--------|------|--------|
+| GET | `/` | Public (search, filter, paginate) |
+| GET | `/featured` | Public |
+| GET | `/recent` | Public |
+| GET | `/{slug}` | Public (increments views) |
+| GET | `/my-listings` | Authenticated |
+| POST | `/` | Seller/Admin |
+| PUT | `/{id}` | Owner/Admin |
+| DELETE | `/{id}` | Owner/Admin |
+| POST | `/{id}/images` | Owner/Admin (multipart) |
+| DELETE | `/{id}/images/{imageId}` | Owner/Admin |
+
+### Cars (`/api/cars`)
+| Method | Path | Access |
+|--------|------|--------|
+| GET | `/makes` | Public |
+| GET | `/makes/{makeId}/models` | Public |
+
+### Bookings (`/api/bookings`)
+| Method | Path | Access |
+|--------|------|--------|
+| POST | `/initiate` | Authenticated |
+| POST | `/verify-payment` | Authenticated |
+| GET | `/my-bookings` | Authenticated |
+| GET | `/my-received` | Authenticated |
+| PUT | `/{id}/confirm` | Seller/Admin |
+| PUT | `/{id}/cancel` | Buyer/Seller/Admin |
+
+### Saved (`/api/saved`)
+| Method | Path | Access |
+|--------|------|--------|
+| GET | `/` | Authenticated |
+| POST | `/{listingId}` | Authenticated |
+| DELETE | `/{listingId}` | Authenticated |
+| GET | `/check/{listingId}` | Authenticated |
+
+### Inquiries (`/api/inquiries`)
+| Method | Path | Access |
+|--------|------|--------|
+| POST | `/` | Authenticated |
+| GET | `/sent` | Authenticated |
+| GET | `/received` | Authenticated |
+| POST | `/{id}/reply` | Authenticated |
+| PUT | `/{id}/read` | Authenticated |
+
+### AI (`/api/ai`)
+| Method | Path | Access |
+|--------|------|--------|
+| POST | `/recommend` | Public |
+| GET | `/similar/{listingId}` | Public |
+
+### Calculator (`/api/calculator`)
+| Method | Path | Access |
+|--------|------|--------|
+| POST | `/emi` | Public |
+
+### Admin (`/api/admin`) — requires ADMIN role
+| Method | Path |
+|--------|------|
+| GET | `/dashboard` |
+| GET | `/listings` |
+| PUT | `/listings/{id}/verify` |
+| PUT | `/listings/{id}/feature` |
+| PUT | `/listings/{id}/reject` |
+| GET | `/users` |
+| PUT | `/users/{id}/verify-seller` |
+| GET | `/analytics/popular` |
+| GET | `/analytics/searches` |
+| GET | `/bookings` |
+
+---
+
+## Environment Variables
+
+See [`.env.example`](.env.example) for all required variables:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JWT_SECRET` | Yes | JWT signing secret |
+| `STRIPE_SECRET_KEY` | For payments | Stripe API secret key |
+| `STRIPE_WEBHOOK_SECRET` | For payments | Stripe webhook signing secret |
+| `CLOUDINARY_*` | For images | Cloud image upload credentials |
+| `OPENAI_API_KEY` | For AI features | OpenAI API key |
+| `FIREBASE_CREDENTIALS_PATH` | Optional | Path to Firebase service account JSON |
+
+---
+
+## Running Tests
+
+```bash
+# All tests
+mvn test
+
+# Specific test suites
+mvn -Dtest=AuthControllerIntegrationTest test
+mvn -Dtest=BookingControllerSecurityWebTest test
+mvn -Dtest=EmiCalculatorServiceTest test
+```
+
+---
+
+## Project Structure
+
+```
+project/
+├── pom.xml                     # Maven dependencies
+├── start-local.sh              # Local dev startup helper script
+├── src/main/java/              # Spring Boot application
+│   └── com/automarket/marketplace/
+│       ├── admin/              # Admin dashboard & analytics
+│       ├── ai/                 # AI recommendations (OpenAI)
+│       ├── auth/               # JWT auth + Firebase
+│       ├── booking/            # Test drive bookings + Stripe
+│       ├── calculator/         # EMI calculator
+│       ├── car/                # Makes & models catalog
+│       ├── compare/            # Side-by-side comparison
+│       ├── config/             # Security, CORS, data seeder
+│       ├── inquiry/            # Buyer-seller messaging
+│       ├── listing/            # Core marketplace listings
+│       ├── review/             # Seller reviews
+│       └── common/             # Shared DTOs, exceptions
+├── src/main/resources/
+│   ├── application.yml         # App config (env var overrides)
+│   └── db/migration/           # Flyway SQL migrations
+└── frontend/
+    ├── src/
+    │   ├── components/         # Reusable UI components
+    │   ├── pages/              # Route-level pages
+    │   ├── lib/                # API service layer
+    │   └── store/              # Zustand state stores
+    └── package.json
+```
+
+## Notes
+
+- On first start, `CarDataSeeder` auto-populates 50 demo listings with demo seller accounts
+- Flyway manages all schema migrations automatically
+- If Firebase credentials are not configured, `/api/auth/firebase` returns a service-unavailable error by design
+- CORS configured for `http://localhost:5173` (Vite dev server)
