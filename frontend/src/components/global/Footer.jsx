@@ -53,11 +53,16 @@ export default function Footer() {
           <p className="mt-4 max-w-xs font-playfair text-base italic text-gray-400">
             Crafted for discerning drivers who value style, performance, and trust.
           </p>
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-8 flex items-center gap-4">
             {socialLinks.map(({ Icon, label }) => (
-              <Button key={label} variant="icon" aria-label={label} className="border-white/10 bg-black-700 text-white hover:bg-black-800">
-                <Icon size={18} strokeWidth={1.5} />
-              </Button>
+              <a
+                key={label}
+                href="#"
+                aria-label={label}
+                className="group flex h-11 w-11 items-center justify-center rounded-full bg-white/5 text-gray-400 transition-all duration-300 hover:-translate-y-1 hover:bg-blue hover:text-white hover:shadow-lg hover:shadow-blue/25"
+              >
+                <Icon size={20} strokeWidth={1.5} className="transition-transform duration-300 group-hover:scale-110" />
+              </a>
             ))}
           </div>
         </div>
